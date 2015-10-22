@@ -1,0 +1,12 @@
+---
+timeout: 180
+instances: 1
+memory: 700M
+env:
+    SPRING_PROFILES_ACTIVE: cloud
+    JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
+applications:
+- name: greeter-service
+  random-route: true
+  path: target/spring-boot-greeter-0.1.0.jar
+  services: [ discovery-service, circuit-breaker-dashboard, config-server ]
