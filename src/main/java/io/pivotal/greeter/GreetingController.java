@@ -23,9 +23,18 @@ public class GreetingController {
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
+    
     @RequestMapping("/greeting")
     @HystrixCommand(fallbackMethod = "fallbackGreeting")
     public Greeting greeting(@RequestParam(value="name", defaultValue="World") String name) {
+        
+    	return new Greeting(counter.incrementAndGet(),
+                            String.format(template, name));
+    }
+    
+    @RequestMapping("/reversegreeting")
+    @HystrixCommand(fallbackMethod = "fallbackGreeting")
+    public Greeting greetingReverse(@RequestParam(value="name", defaultValue="World") String name) {
         	
     	String reversed = restTemplate.getForObject("http://" + reverserServiceName + "/reverse/{name}", String.class, name);
 		
@@ -33,6 +42,7 @@ public class GreetingController {
                             String.format(template, reversed));
     }
     
+  
     private Greeting fallbackGreeting(String name) {
     	
     	return new Greeting(counter.incrementAndGet(),
